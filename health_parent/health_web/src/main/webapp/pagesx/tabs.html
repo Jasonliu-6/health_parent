@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+        <!-- 引入组件库 -->
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script src="../js/vue.js"></script>
+        <script src="../plugins/elementui/index.js"></script>
+        <script src="../js/axios-0.18.0.js"></script>
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <!--
+                type:选项卡样式 card/border-card
+                v-model:选中选项卡的 name
+            --->
+            <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+                <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
+                <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+                <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+                <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+            </el-tabs>
+        </div>
+    </body>
+
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                activeName:'first',//添加/编辑窗口Tab标签名称
+            }
+        })
+    </script>
+</html>

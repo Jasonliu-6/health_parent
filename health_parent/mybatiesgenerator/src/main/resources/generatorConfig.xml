@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 引入配置文件 例如：jdbc相关的配置 可以写在配置文件中 通过加载properties文件-->
+    <!--<properties resource="db.properties"/>-->
+
+    <!--自行指定classpath，可以指定生成代码所需要的jar包 如数据库驱动等
+     location: 存放jar包的路径
+     -->
+    <!--<classPathEntry-->
+    <!--location="\.m2\repository\mysql\mysql-connector-java\5.1.46\mysql-connector-java-5.1.46.jar"/>-->
+
+    <context id="default" targetRuntime="MyBatis3">
+        <!-- 生成的Java文件的编码 -->
+        <property name="javaFileEncoding" value="UTF-8" />
+        <!-- 格式化java代码 -->
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
+        <!-- JavaBean 实现 序列化 接口 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+
+        <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="false"/>
+            <!--生成的注释包含时间戳-->
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+
+        <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/health"
+                        userId="root"
+                        password="root">
+            <property name="useInformationSchema" value="true"/>
+        </jdbcConnection>
+
+        <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
+            NUMERIC 类型解析为java.math.BigDecimal -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="true"/>
+        </javaTypeResolver>
+
+
+        <!-- targetProject:生成PO类的位置  与数据库对应的实体-->
+        <javaModelGenerator targetPackage="com.itheima.pojo" targetProject="src/main/java">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="true"/>
+            <!-- 从数据库返回的值被清理前后的空格 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+
+         <!--targetProject:mapper映射文件生成的位置-->
+        <sqlMapGenerator targetPackage="com.itheima.dao" targetProject="src/main/resources">
+        <!--<!– enableSubPackages:是否让schema作为包的后缀 –>-->
+        <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+
+        <!--ANNOTATEDMAPPER: 生成java类文件,基于注解的Mapper接口，不会有对应的XML映射文件
+            MIXEDMAPPER:XML和注解的混合形式
+            XMLMAPPER:所有的方法都在XML中，接口调用依赖XML文件 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.itheima.dao"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"  />
+        </javaClientGenerator>
+
+        <!--<table tableName="user" domainObjectName="User" enableCountByExample="false"-->
+        <!--enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"/>-->
+        <table schema="health" tableName="t_user" domainObjectName="User"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+
+        <table schema="health" tableName="t_member" domainObjectName="Member"
+               enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               selectByExampleQueryId="true">
+        </table>
+    </context>
+</generatorConfiguration>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+							http://www.springframework.org/schema/context
+							http://www.springframework.org/schema/context/spring-context.xsd
+							http://www.springframework.org/schema/aop
+							http://www.springframework.org/schema/aop/spring-aop.xsd
+							http://www.springframework.org/schema/tx
+							http://www.springframework.org/schema/tx/spring-tx.xsd
+							http://www.springframework.org/schema/util
+							http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--数据源配置-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <!--
+            useUnicode 是否使用Unicode字符集
+            characterEncoding 当useUnicode设置为true时，指定字符编码。比如可设置为utf-8、gb2312、gbk
+            autoReconnect 当数据库连接异常中断时，是否自动重新连接
+        -->
+        <property name="url" value="jdbc:mysql://localhost:3306/health?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true" />
+    </bean>
+
+    <!--mybaits与sprig集成-->
+    <bean name="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:SqlMapConfig.xml"/>
+    </bean>
+
+    <!--dao接口扫描-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.itheima.dao"/>
+    </bean>
+
+</beans>

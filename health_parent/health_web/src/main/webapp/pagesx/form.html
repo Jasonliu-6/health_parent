@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>传智健康</title>
+    <meta name="description" content="传智健康">
+    <meta name="keywords" content="传智健康">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- 引入组件库 -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+</head>
+<body>
+<div id="app">
+<!--
+表单验证
+
+Form 组件提供了表单验证的功能，只需要通过 rules 属性传入约定的验证规则，并将 Form-Item 的 prop 属性设置为需校验的字段名即可
+
+要实现表单验证，那么有下面几个步骤需要完成
+
+1.定义 表单ref(引用)属性，要验证哪个表单就需要找到这个表单 通过ref指定的名字找到需要验证的表单
+2.绑定数据模型 :model,在vue的 data 属性下面定义 表单数据模型 form
+3.绑定验证规则 :rules,在vue的 data 属性下面定义 表单字段验证规则名 rules
+4.表单验证
+    a.通过this.$refs['form'(引用名)] 找到需要验证的表单
+    b.调用this.$refs['form'].validate()验证方法
+    c.调用validate()验证方法后，就会返回验证表单成功或失败的结果给valid，valid=true成功，valid=false失败
+    d.如果valid=true，表示表单验证成功，那么就可以提交数据到后台了
+
+       //演示
+       this.$refs['form'].validate((valid) => {
+                        if (valid) {
+                            alert(valid+' 验证成功!');
+                        } else {
+                            alert(valid+" 验证失败");
+                        }
+                    });
+
+-->
+<el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <!--
+        prop：表单域 model 字段，在使用 validate、resetFields 方法的情况下，该属性是必填的
+    -->
+    <el-form-item label="活动名称" prop="name">
+        <el-input v-model="form.name"></el-input>
+    </el-form-item>
+    <el-form-item label="活动区域" prop="region">
+        <el-select v-model="form.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
+    </el-form-item>
+    <el-form-item label="活动时间">
+        <el-col :span="11">
+            <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+        </el-col>
+        <el-col class="line" :span="2">-</el-col>
+        <el-col :span="11">
+            <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+        </el-col>
+    </el-form-item>
+    <el-form-item label="即时配送">
+        <el-switch v-model="form.delivery"></el-switch>
+    </el-form-item>
+    <el-form-item label="活动性质">
+        <el-checkbox-group v-model="form.type">
+            <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+            <el-checkbox label="地推活动" name="type"></el-checkbox>
+            <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+            <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+        </el-checkbox-group>
+    </el-form-item>
+    <el-form-item label="特殊资源">
+        <el-radio-group v-model="form.resource">
+            <el-radio label="线上品牌商赞助"></el-radio>
+            <el-radio label="线下场地免费"></el-radio>
+        </el-radio-group>
+    </el-form-item>
+    <el-form-item label="活动形式">
+        <el-input type="textarea" v-model="form.desc"></el-input>
+    </el-form-item>
+    <el-form-item>
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+    </el-form-item>
+</el-form>
+</div>
+</body>
+
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            //定义校验规则
+            rules: {
+                name: [
+                    { required: true, message: '请输入活动名称', trigger: 'blur' },
+                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ],
+                region: [
+                    { required: true, message: '请选择活动区域', trigger: 'change' }
+                ]
+            }
+        },
+        methods:{
+            onSubmit() {
+                console.log(this.form);
+                //this 代表的是vue的实例对象，$refs表示的是vue对象里面的引用对象,通过这个对象
+                //validate：对整个表单进行校验的方法，参数为一个回调函数。
+                //该回调函数会在校验结束后被调用，并传入两个参数：是否校验成功和未通过校验的字段。
+                //valid 表单验证返回结果
+                //true:表单验证成功
+                //false：表单验证失败
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        alert(valid+" 验证成功");
+                    } else {
+                        alert(valid+" 验证失败");
+                    }
+                });
+            }
+        }
+    })
+</script>
+</html>

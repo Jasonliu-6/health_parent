@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.dao.CheckGroupDao">
+    <!--新增-->
+    <insert id="add" parameterType="com.itheima.pojo.CheckGroup">
+    <!--查询最后插入的id 值
+    keyProperty 将SELECT LAST_INSERT_ID() 后的值，保存到com.itheima.pojo.CheckGroup对象的id字段中
+    resultType 返回值类型
+    order
+           AFTER   在inert语句执行完成后，执行selectKey中的语句
+           BEFORE  在inert语句执行前，执行selectKey中的语句
+    -->
+
+    <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+        SELECT LAST_INSERT_ID()
+    </selectKey>
+
+    insert into t_checkgroup(code,name,sex,helpCode,remark,attention)
+    values(#{code},#{name},#{sex},#{helpCode},#{remark},#{attention})
+</insert>
+
+<!--添加检查组与检查项关联信息-->
+    <insert id="setCheckGroupAndCheckItem" parameterType="hashmap">
+        INSERT INTO t_checkgroup_checkitem(checkgroup_id,checkitem_id) VALUES (#{checkgroup_id},#{checkitem_id})
+    </insert>
+
+    <!--批量保存检查组与检查项关联信息-->
+    <insert id="setCheckGroupAndCheckItemBatch">
+        INSERT INTO t_checkgroup_checkitem(checkgroup_id,checkitem_id) VALUES
+
+        <foreach collection="list" item="checkgroup" separator=",">
+          (#{checkgroup.checkgroup_id},#{checkgroup.checkitem_id})
+         </foreach>
+    </insert>
+
+
+
+    <!--分页查询-->
+    <select id="selectByCondition" parameterType="string" resultType="com.itheima.pojo.CheckGroup">
+        SELECT * FROM t_checkgroup
+        <where>
+            <!--<if test="value!=null and value.length>0">
+                code=#{value} OR name=#{value} OR helpCode=#{value}
+            </if>-->
+            <!--模糊查询 方式1-->
+           <if test="value!=null and value.length>0">
+                name like concat('%',#{value},'%')
+            </if>
+
+            <!--模糊查询 方式2-->
+            <!--<if test="value!=null and value.length>0">
+                name like "%"#{value}"%"
+            </if>-->
+
+            <!--模糊查询 方式3 参考http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html
+            a.如果参数是string类型直接使用_parameter获取绑定参数
+            b.如果参数是com.itheima.pojo.CheckGroup 可以使用_parameter.getName()
+            -->
+            <!--<if test="value!=null and value.length>0">
+                <bind name="param" value="'%'+_parameter+'%'"/>
+                name like #{param}
+            </if>-->
+        </where>
+    </select>
+
+    <!--根据id查询检查组信息-->
+    <select id="findById" parameterType="int" resultType="com.itheima.pojo.CheckGroup">
+        SELECT * FROM t_checkgroup WHERE id=#{id}
+    </select>
+
+    <!--根据检查组id查询关联检查项ids-->
+    <select id="findCheckitemIdsById" parameterType="int" resultType="int">
+        select checkitem_id from t_checkgroup_checkitem WHERE checkgroup_id=#{id}
+    </select>
+
+    <select id="findAll" resultType="com.itheima.pojo.CheckGroup">
+        SELECT * FROM t_checkgroup
+    </select>
+
+    <!--property 对应pojo里面的属性字段-->
+    <!--column 与数据库字段对应-->
+    <resultMap id="baseResultMap" type="com.itheima.pojo.CheckGroup">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+    </resultMap>
+
+    <!--查询检查项信息-->
+    <resultMap id="findByCheckgroupIdResultMap" type="com.itheima.pojo.CheckGroup" extends="baseResultMap">
+        <!--复杂类型 list
+         property 对应pojo里面的属性字段
+         javaType 集合的类型 List set
+         ofType 集合里面存储的元素的数据类型
+         column 子查询传入的参数列
+
+          private List<CheckItem> checkItems;
+         -->
+        <collection property="checkItems" ofType="com.itheima.pojo.CheckItem" javaType="ArrayList"
+         select="com.itheima.dao.CheckItemDao.findByCheckgroupId" column="id"/>
+    </resultMap>
+
+    <!--根据套餐id 查询检查组信息-->
+    <select id="findBySetmealId" resultMap="findByCheckgroupIdResultMap">
+        SELECT * FROM t_checkgroup WHERE id in(SELECT checkgroup_id FROM t_setmeal_checkgroup WHERE setmeal_id=#{id})
+    </select>
+</mapper>

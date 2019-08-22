@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+        <!-- 引入组件库 -->
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script src="../js/vue.js"></script>
+        <script src="../plugins/elementui/index.js"></script>
+        <script src="../js/axios-0.18.0.js"></script>
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <!--
+            @current-change 页码改变时触发
+            :current-page 当前页码
+            :page-size 每页记录数
+            :total 总记录数
+            layout 组件布局，子组件名用逗号分隔
+            -->
+            <el-pagination
+                    @current-change="handleCurrentChange"
+                    :current-page="pagination.currentPage"
+                    :page-size="pagination.pageSize"
+                    layout="total,  prev, pager, next, jumper"
+                    :total="pagination.total">
+            </el-pagination>
+        </div>
+    </body>
+
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                pagination:{
+                    currentPage:3,
+                    pageSize:10,
+                    total:100
+                }
+            },
+            methods:{
+                handleCurrentChanges:function(currentPage){
+                    alert("第"+currentPage+"页");
+                },
+
+                handleCurrentChange(currentPage){
+                    alert("第"+currentPage+"页");
+                }
+            }
+        })
+    </script>
+</html>

@@ -1,0 +1,8 @@
+com\itheima\controller\OrderSettingController.class
+com\itheima\controller\CheckitemController.class
+com\itheima\controller\TestController.class
+com\itheima\controller\SetmealController.class
+com\itheima\controller\UserController.class
+com\itheima\controller\ReportController.class
+com\itheima\service\SpringSecurityUserService.class
+com\itheima\controller\CheckGroupController.class

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+        <!-- 引入组件库 -->
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script src="../js/vue.js"></script>
+        <script src="../plugins/elementui/index.js"></script>
+        <script src="../js/axios-0.18.0.js"></script>
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <template>
+                <el-button type="text" @click="open">点击打开 Message Box</el-button>
+            </template>
+        </div>
+    </body>
+
+    <script>
+        /*调用$prompt方法即可打开消息提示，它模拟了系统的 prompt。
+        可以用inputPattern字段自己规定匹配模式，或者用inputValidator规定校验函数，可以返回Boolean或String，返回false或字符串时均表示校验未通过，
+        同时返回的字符串相当于定义了inputErrorMessage字段。此外，可以用inputPlaceholder字段来定义输入框的占位符。*/
+
+        var vue = new Vue({
+            el: '#app',
+            methods: {
+                open() {
+                    this.$prompt('请输入预约人数', '提示', {
+                        confirmButtonText: '确定',//定义确定按钮
+                        cancelButtonText: '取消',//青叶取消按钮
+                        inputPattern: /^[0-9]*[1-9][0-9]*/,//输入值校验 1 10 111
+                        inputErrorMessage: '预约人数只能为数字'
+                    }).then(({ value }) => {
+                        //点击 确定按钮 调用then方法
+                        this.$message({
+                            type: 'success',
+                            message: '您输入的预约人数为: ' + value
+                        });
+
+                    }).catch(() => {
+                        //点击 取消按钮调用 该方法
+                        this.$message({
+                            type: 'info',
+                            message: '取消输入'
+                        });
+                    });
+                }
+            }
+        })
+    </script>
+</html>
